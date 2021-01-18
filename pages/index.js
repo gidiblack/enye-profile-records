@@ -1,17 +1,19 @@
 import React, { useState, useEffect } from 'react';
-import Datatable from './datatable.js';
+import Datatable from './datatable';
+import Pagination from './paginate';
 import 'bootstrap/dist/css/bootstrap.min.css';
-// import styles from '../styles/Home.module.css'
 
 // call es6-promise and isomorphic-fetch incase the browser doesn't support fetch and/or promises
 require("es6-promise").polyfill();
 require('isomorphic-fetch');
 
-export default function Home( { records } ) {
+export default function Home() {
   // useState allows you set default values then return an array you can use to get and set values/state
   const [data, setData] = useState([]);
   const [q, setQ] = useState("");
   const [searchColumns, setSearchColumns] = useState(["FirstName", "LastName"]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [recordsPerPage] = useState(20);
 
   // useEffect works inplace of componentDidMount to fetch data when component loads
   useEffect(() => {
@@ -25,20 +27,27 @@ export default function Home( { records } ) {
   //toString because not all columns have sting data
   //toLowerCase to make the search case insensitive
   function search(rows) {
-      return rows.filter(
-        (row) => 
-        searchColumns.some((column) => row[column].toString().toLowerCase().indexOf(q.toLowerCase()) > -1)
-          );
+    return rows.filter(
+      (row) => 
+      searchColumns.some((column) => row[column].toString().toLowerCase().indexOf(q.toLowerCase()) > -1)
+    );
   }
+  // get current records
+  const indexOfLastRecord = currentPage * recordsPerPage;
+  const indexOfFirstRecord = indexOfLastRecord - recordsPerPage;
+  const currentRecords = data.slice(indexOfFirstRecord, indexOfLastRecord);
+  // change page (called in onclick func)
+  const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
   const columns = data[0] && Object.keys(data[0]);
   return (
-    <div className="container" >
+    <div className="container my-3" >
+      <h1 className="text-center" >eCommerce Profile Records</h1>
       <div>
-        <input type="text" value={q} onChange={(e) => setQ(e.target.value)} />
+        <input type="text" className="mr-5" placeholder="search a profile" value={q} onChange={(e) => setQ(e.target.value)} />
         {/* print out checkboxes for each iteration of column names */}
         {columns && columns.map((column) => 
-            <label>
+            <label className="mr-2">
               <input type="checkbox" checked={searchColumns.includes(column)}
                 onChange={(e) => {
                   // check for checked checkboxes then remove the just unchecked column or add to the previously checked columns
@@ -52,8 +61,10 @@ export default function Home( { records } ) {
       
       <div>
       {/* data stored in the state after fetching will be filtered thru the search function before being rendered on the table so as to search on the fly */}
-        <Datatable data={search(data)} />
+        <Datatable data={search(currentRecords)} />
+        <Pagination recordsPerPage={recordsPerPage} totalRecords={data.length} paginate={paginate} />
       </div>
+      <p className="text-center">developed by <span className="bold">gidiblack</span> &copy; 2021</p>
     </div>
   )
 }

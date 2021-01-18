@@ -7,7 +7,7 @@ export default function Datatable ( {data} ) {
   const columns = data[0] && Object.keys(data[0]);
 
     return (
-      <Table>
+      <Table responsive size="sm" striped dark className="mt-3" >
         <thead>
           <tr>
             {data[0] && columns.map((heading) => <th>{heading}</th>)}
