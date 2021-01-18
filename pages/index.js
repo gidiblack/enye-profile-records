@@ -1,65 +1,59 @@
-import Head from 'next/head'
-import styles from '../styles/Home.module.css'
+import React, { useState, useEffect } from 'react';
+import Datatable from './datatable.js';
+import 'bootstrap/dist/css/bootstrap.min.css';
+// import styles from '../styles/Home.module.css'
 
-export default function Home() {
+// call es6-promise and isomorphic-fetch incase the browser doesn't support fetch and/or promises
+require("es6-promise").polyfill();
+require('isomorphic-fetch');
+
+export default function Home( { records } ) {
+  // useState allows you set default values then return an array you can use to get and set values/state
+  const [data, setData] = useState([]);
+  const [q, setQ] = useState("");
+  const [searchColumns, setSearchColumns] = useState(["FirstName", "LastName"]);
+
+  // useEffect works inplace of componentDidMount to fetch data when component loads
+  useEffect(() => {
+    fetch('https://api.enye.tech/v1/challenge/records')
+    .then((res) => res.json())
+    .then((json) => setData(json.records.profiles));
+    // console.log(data);
+  }, []);
+
+  //search function that filters thru the rows of the table to find the indexof a character entered into the query then returns that row if there's a match
+  //toString because not all columns have sting data
+  //toLowerCase to make the search case insensitive
+  function search(rows) {
+      return rows.filter(
+        (row) => 
+        searchColumns.some((column) => row[column].toString().toLowerCase().indexOf(q.toLowerCase()) > -1)
+          );
+  }
+
+  const columns = data[0] && Object.keys(data[0]);
   return (
-    <div className={styles.container}>
-      <Head>
-        <title>Create Next App</title>
-        <link rel="icon" href="/favicon.ico" />
-      </Head>
-
-      <main className={styles.main}>
-        <h1 className={styles.title}>
-          Welcome to <a href="https://nextjs.org">Next.js!</a>
-        </h1>
-
-        <p className={styles.description}>
-          Get started by editing{' '}
-          <code className={styles.code}>pages/index.js</code>
-        </p>
-
-        <div className={styles.grid}>
-          <a href="https://nextjs.org/docs" className={styles.card}>
-            <h3>Documentation &rarr;</h3>
-            <p>Find in-depth information about Next.js features and API.</p>
-          </a>
-
-          <a href="https://nextjs.org/learn" className={styles.card}>
-            <h3>Learn &rarr;</h3>
-            <p>Learn about Next.js in an interactive course with quizzes!</p>
-          </a>
-
-          <a
-            href="https://github.com/vercel/next.js/tree/master/examples"
-            className={styles.card}
-          >
-            <h3>Examples &rarr;</h3>
-            <p>Discover and deploy boilerplate example Next.js projects.</p>
-          </a>
-
-          <a
-            href="https://vercel.com/import?filter=next.js&utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-            className={styles.card}
-          >
-            <h3>Deploy &rarr;</h3>
-            <p>
-              Instantly deploy your Next.js site to a public URL with Vercel.
-            </p>
-          </a>
-        </div>
-      </main>
-
-      <footer className={styles.footer}>
-        <a
-          href="https://vercel.com?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Powered by{' '}
-          <img src="/vercel.svg" alt="Vercel Logo" className={styles.logo} />
-        </a>
-      </footer>
+    <div className="container" >
+      <div>
+        <input type="text" value={q} onChange={(e) => setQ(e.target.value)} />
+        {/* print out checkboxes for each iteration of column names */}
+        {columns && columns.map((column) => 
+            <label>
+              <input type="checkbox" checked={searchColumns.includes(column)}
+                onChange={(e) => {
+                  // check for checked checkboxes then remove the just unchecked column or add to the previously checked columns
+                  const checked = searchColumns.includes(column)
+                  setSearchColumns(prev => checked ? prev.filter(sc => sc !== column) : [...prev, column]);
+                }} 
+              />
+            {column}</label>
+        )}
+      </div>
+      
+      <div>
+      {/* data stored in the state after fetching will be filtered thru the search function before being rendered on the table so as to search on the fly */}
+        <Datatable data={search(data)} />
+      </div>
     </div>
   )
 }
