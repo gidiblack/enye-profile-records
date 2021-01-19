@@ -7,15 +7,15 @@ export default function Datatable ( {data} ) {
   const columns = data[0] && Object.keys(data[0]);
 
     return (
-      <Table responsive size="sm" striped dark className="mt-3" >
+      <Table responsive size="sm" striped dark bordered className="mt-3" >
         <thead>
           <tr>
-            {data[0] && columns.map((heading) => <th>{heading}</th>)}
+            {data[0] && columns.map((heading) => <th key={heading}>{heading}</th>)}
           </tr>
         </thead>
         <tbody>
           {data.map(row => <tr>
-            {columns.map(column => <td>{row[column]}</td>)}
+            {columns.map(column => <td key={column}>{row[column]}</td>)}
             </tr>)}
         </tbody>
       </Table>

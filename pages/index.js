@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Datatable from './datatable';
 import Pagination from './paginate';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import styles from '../styles/home.module.css';
 
 // call es6-promise and isomorphic-fetch incase the browser doesn't support fetch and/or promises
 require("es6-promise").polyfill();
@@ -42,13 +43,14 @@ export default function Home() {
   const columns = data[0] && Object.keys(data[0]);
   return (
     <div className="container my-3" >
-      <h1 className="text-center" >eCommerce Profile Records</h1>
+      <h1 className={styles.title} >eCommerce Profile Records</h1>
       <div>
-        <input type="text" className="mr-5" placeholder="search a profile" value={q} onChange={(e) => setQ(e.target.value)} />
+        <input type="text" className={styles.search} placeholder="search a profile" value={q} onChange={(e) => setQ(e.target.value)} />
         {/* print out checkboxes for each iteration of column names */}
+        <p className={styles.filterSearch}>filter search by:</p>
         {columns && columns.map((column) => 
-            <label className="mr-2">
-              <input type="checkbox" checked={searchColumns.includes(column)}
+            <label className={styles.checkLabel}>
+              <input type="checkbox" className="mr-1" checked={searchColumns.includes(column)}
                 onChange={(e) => {
                   // check for checked checkboxes then remove the just unchecked column or add to the previously checked columns
                   const checked = searchColumns.includes(column)
@@ -64,7 +66,7 @@ export default function Home() {
         <Datatable data={search(currentRecords)} />
         <Pagination recordsPerPage={recordsPerPage} totalRecords={data.length} paginate={paginate} />
       </div>
-      <p className="text-center">developed by <span className="bold">gidiblack</span> &copy; 2021</p>
+      <p className="text-center">developed by <span className={styles.strong}>gidiblack</span> &copy; 2021</p>
     </div>
   )
 }

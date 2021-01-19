@@ -1,0 +1,26 @@
+.search {
+    width: 90%;
+    display: block;
+    margin: 1rem;
+    text-align: center;
+}
+
+.checkLabel {
+    font-size: .75rem;
+    margin: 0 .5rem;
+}
+
+
+.title {
+    font-size: 2.25rem;
+    text-align: center;
+}
+
+.strong {
+    font-weight: bold;
+}
+
+.filterSearch{
+    font-size: .8rem;
+    margin: 0;
+}
