@@ -48,16 +48,16 @@ export default function Home() {
         <input type="text" className={styles.search} placeholder="search a profile" value={q} onChange={(e) => setQ(e.target.value)} />
         {/* print out checkboxes for each iteration of column names */}
         <p className={styles.filterSearch}>filter search by:</p>
-        {columns && columns.map((column) => 
-            <label className={styles.checkLabel}>
-              <input type="checkbox" className="mr-1" checked={searchColumns.includes(column)}
-                onChange={(e) => {
-                  // check for checked checkboxes then remove the just unchecked column or add to the previously checked columns
-                  const checked = searchColumns.includes(column)
-                  setSearchColumns(prev => checked ? prev.filter(sc => sc !== column) : [...prev, column]);
-                }} 
-              />
-            {column}</label>
+        {/* map method takes a second parameter to be used as unique keys for child nodes */}
+        {columns && columns.map((column, colIndex) => 
+            <label key={colIndex} className={styles.checkLabel}>
+          <input type="checkbox" className="mr-1" checked={searchColumns.includes(column)}
+            onChange={(e) => {
+              // check for checked checkboxes then remove the just unchecked column or add to the previously checked columns
+              const checked = searchColumns.includes(column);
+              setSearchColumns(prev => checked ? prev.filter(sc => sc !== column) : [...prev, column]);
+            } } />
+          {column}</label>
         )}
       </div>
       
