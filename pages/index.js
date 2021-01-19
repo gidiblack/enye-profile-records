@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import Datatable from './datatable';
-import Pagination from './paginate';
+import Datatable from '../src/datatable';
+import Pagination from '../src/paginate';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import styles from '../styles/home.module.css';
 
