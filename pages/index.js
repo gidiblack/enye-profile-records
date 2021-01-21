@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 import Datatable from '../src/datatable';
 import Pagination from '../src/paginate';
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -11,6 +12,7 @@ require('isomorphic-fetch');
 export default function Home() {
   // useState allows you set default values then return an array you can use to get and set values/state
   const [data, setData] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [q, setQ] = useState("");
   const [searchColumns, setSearchColumns] = useState(["FirstName", "LastName"]);
   const [currentPage, setCurrentPage] = useState(1);
@@ -18,9 +20,17 @@ export default function Home() {
 
   // useEffect works inplace of componentDidMount to fetch data when component loads
   useEffect(() => {
-    fetch('https://api.enye.tech/v1/challenge/records')
-    .then((res) => res.json())
-    .then((json) => setData(json.records.profiles));
+    const fetchRecords = async () => {
+      // setLoading(true);
+      const res = await axios.get('https://api.enye.tech/v1/challenge/records');
+      setData(res.data.records.profiles);
+      setLoading(false);
+    } 
+    fetchRecords();
+      // fetch('https://api.enye.tech/v1/challenge/records')
+      // .then((res) => res.json())
+      // .then((json) => setData(json.records.profiles));
+      // setLoading(false);
     // console.log(data);
   }, []);
 
@@ -63,7 +73,7 @@ export default function Home() {
       
       <div>
       {/* data stored in the state after fetching will be filtered thru the search function before being rendered on the table so as to search on the fly */}
-        <Datatable data={search(currentRecords)} />
+        <Datatable data={search(currentRecords)} loading={loading} />
         <Pagination recordsPerPage={recordsPerPage} totalRecords={data.length} paginate={paginate} />
       </div>
       <p className="text-center">developed by <span className={styles.strong}>gidiblack</span> &copy; 2021</p>

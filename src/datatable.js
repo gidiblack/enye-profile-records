@@ -2,9 +2,20 @@ import React from 'react';
 import { Table } from 'reactstrap';
 import styles from '../styles/datatable.module.css';
 
-export default function Datatable ( {data} ) {
+export default function Datatable ( {data, loading} ) {
   const headingKey = 'heading';
-  if(data.length > 0 ){
+  if (loading) {
+    return (
+      <Table responsive size="sm" striped className="mt-3" >
+        <thead className={styles.head}>
+          <tr key={headingKey}>
+            <th className={`${styles.heading} text-center`}>Loading records...</th>
+          </tr>
+        </thead>
+      </Table>
+    )
+  }
+  else if(data.length > 0 ){
     // this varaible serves as a gaurd clause to dynamically generate the table using the keys of the data object incase the data has no rows / is empty
     const columns = data[0] && Object.keys(data[0]);
       
