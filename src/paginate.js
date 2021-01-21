@@ -1,4 +1,5 @@
 import React from 'react';
+import styles from '../styles/datatable.module.css';
 
 export default function Pagination ( {recordsPerPage, totalRecords, paginate} ) {
     const pageNumbers = [];
@@ -11,7 +12,7 @@ export default function Pagination ( {recordsPerPage, totalRecords, paginate} ) 
             <ul className="pagination">
                 {pageNumbers.map(number => (
                     <li key={number} className="page-item" >
-                        <a onClick={() => paginate(number)} href="#" className="page-link">
+                        <a onClick={() => paginate(number)} href="#" className={`${styles.pageLink} page-link`}>
                             {number}
                         </a>
                     </li>

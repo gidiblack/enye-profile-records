@@ -51,7 +51,7 @@ export default function Home() {
         {/* map method takes a second parameter to be used as unique keys for child nodes */}
         {columns && columns.map((column, colIndex) => 
             <label key={colIndex} className={styles.checkLabel}>
-          <input type="checkbox" className="mr-1" checked={searchColumns.includes(column)}
+          <input type="checkbox" className={styles.checkBox} checked={searchColumns.includes(column)}
             onChange={(e) => {
               // check for checked checkboxes then remove the just unchecked column or add to the previously checked columns
               const checked = searchColumns.includes(column);
